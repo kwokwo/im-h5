@@ -1,0 +1,26 @@
+{
+    "parser": "babel-eslint",
+    "parserOptions": {
+        "sourceType": "module",
+        "allowImportExportEverywhere": false,
+        "codeFrame": false
+    },
+    "env": {
+        "browser": true,
+        "node": true,
+        "es6": true
+    },
+    "plugins": [
+        "babel"
+      ],
+    "rules":{
+          "max-len": ["error", 120, 4],
+          "one-var": "off",
+          "no-invalid-this":"off",
+          "babel/new-cap": 1,
+          "babel/object-curly-spacing": 1,
+          "babel/no-invalid-this":0,
+          "babel/semi": 1
+    },
+    "extends": "google"
+}

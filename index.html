@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="pragma" CONTENT="no-cache">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="black" name="apple-mobile-web-app-status-bar-style">
+    <meta content="telephone=no" name="format-detection">    
+    <title>胖智机器人|智能客服系统领先品牌,更聪明的机器人客服</title>
+    <link href="http://api.aijust.com:8030/images/ico.ico" rel="shortcut icon" type="image/x-icon">
+    <meta name="keywords" content="胖智机器人，智能客服，机器人客服，在线客服系统，智能咨询，客服工具，机器人，聊天机器人，在线机器人，智能，智能系统，客服系统，云客服，呼叫中心客服系统，网上客服软件，人机对话，客服助手，智能语音交互，全智能云客服，客服软件，机器人客服价格，机器人客服多少钱。">
+    <meta name="Description" content="胖智机器人，专注人工智能技术,提供专业全面的智能客服解决方案。为电商、金融、保险、媒体、医疗、教育、汽车、政府等众多领域提供专业可靠的智能问答服务，24小时在线客服，节省60%以上客服人力成本。">
+    <link href="https://cdn.bootcss.com/normalize/7.0.0/normalize.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <script src="webim.config.js"></script>
+    <script src="strophe-1.2.8.min.js"></script>
+    <script src="websdk-1.4.8.js"></script>
+</head>
+
+<body>
+    <div class="loading"></div>
+    <div class="main-robot-box">
+        <div class="robot-mobile-title">
+            <span>胖智客服</span>
+        </div>
+        <div class="up-cb-box dialog-list" id="dialogList">
+            <div class="force-repaint"></div>
+            <a id="his_more" class="user-more history-more">查看更多</a>
+            <ul id="msgList" class="im-list-block">
+            </ul>
+            <div class="user-load">
+                <i class="gray-robot"></i>
+                <p>请稍等，正在接入···</p>
+            </div>
+        </div>
+
+        <div class="up-dialog-post " id="input-box">
+            <!-- 加一个 gray-over  就是  重新连接的状态 -->
+            <ul class="search-tips" style="display: none;">
+                <!-- 搜索提示 -->
+            </ul>
+            <div class="reconnect">
+                <a class="reconnect-btn">重新连接</a>
+            </div>
+            <div class="bottom-text-content box-flex" data-direction="row">
+                    <div class="customer-btn"></div>
+                    <input id="msg"></input>
+                    <div class="send-msg" id="send">
+                        <p>发送</p>
+                    </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
