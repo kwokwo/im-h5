@@ -23,7 +23,7 @@
             <div class="chat-message">
                 <dl class="minute-box">
                     {{? it.img != '' }}
-                    <dt><img src="{{= it.img }}"><span>{{= it.curw }}</span></dt>{{?}}
+                    <dt><img src="{{= it.img }}" class="no-viewer"><span>{{= it.curw }}</span></dt>{{?}}
                     <dd>
                         <div class="weather-box">
                             <p><em>{{= it.city }}</em><span>{{= it.date }}</span></p>

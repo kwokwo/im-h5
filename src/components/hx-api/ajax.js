@@ -17,10 +17,10 @@ export default {
     setDislikeAjax(id) {
         return this.getJson({
             url: '/intelligent/api/chat/update_dislike/',
-            data: {
+            data: JSON.stringify({
                 im_msg_id: id,
                 dislike: 1,
-            },
+            }),
         });
     },
     /**
@@ -75,9 +75,9 @@ export default {
             url: '/intelligent/api/channel/get_page_setting/',
             data: {
                 id: _ajaxLoginData.client_tenantid,
-                channel_id: 2,
-                tenantid: _ajaxLoginData.client_tenantid,
-                uid: _ajaxLoginData.client_id,
+                // channel_id: 2,
+                // tenantid: _ajaxLoginData.client_tenantid,
+                // uid: _ajaxLoginData.client_id,
             },
         });
     },

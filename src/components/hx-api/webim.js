@@ -643,8 +643,9 @@ let im = {
      * sendMsg
      * 发动消息时触发的方法
      * @param {Object} msgData 
+     *  @param {Number} index 
      */
-    sendMsg(msgData) {
+    sendMsg(msgData, index) {
         let imData = msgData.data;
         // 拼凑消息本身
         if (!imData) return;
@@ -666,6 +667,12 @@ let im = {
             ext_wx_openid: '',
             ext_chat_identity: this.imServer.chat_identity,
         };
+        // 专门为了choice添加的字段 index - choice时的数字编号
+        if (index) {
+             Object.assign(ext, {
+                ext_rapid_session_pos: index,
+             });
+        }
         let id = this.conn.getUniqueId(); // 生成本地消息id
         let msg = new WebIM.message('txt', id); // 创建文本消息
         msg.set({

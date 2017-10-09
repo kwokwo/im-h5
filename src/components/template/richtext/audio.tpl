@@ -32,7 +32,11 @@
                     </dd>
                 </dl>
             </div>
+            <div class="from-panel">
+                    <p>来至网易云音乐</p>
+                </div>
         </div>
+       
         <!--chat-msg End-->
     </div>
 </li>

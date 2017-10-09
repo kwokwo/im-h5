@@ -1,4 +1,5 @@
 'use strict';
+import './jquery/taphold.js';
 import env from '../../config/env.js';
 import ajax from './hx-api/ajax.js';
 import hxApi from './hx-api';
@@ -7,12 +8,12 @@ import customer from './customer-service';
 import Viewer from './viewer/viewer.js';
 import './viewer/viewer.min.css';
 import debounce from 'debounce';
+import insertCss from 'insert-css';
 import MobileDetect from 'mobile-detect';
 const md = new MobileDetect(window.navigator.userAgent);
 // import throttle from 'lodash.throttle';
 const body = $('body');
 const sendBtn = body.find('#send');
-const box = body.find('.main-robot-box');
 const dialogList = body.find('#dialogList');
 const bottombox = body.find('.up-dialog-post'); // 智能客服信息底部
 const mobileTitle = body.find('.robot-mobile-title'); // 智能客服信息头部
@@ -46,23 +47,23 @@ let DOM = {
                 textarea.val('');
             }
         });
-        let time;
+        // let time;
         textarea.on('focus', () => {
             if (md.mobile()) {
                 // bottombox.addClass('fix-bottom');
-                time = setInterval(function() {
+               setTimeout(function() {
                     if (md.os() == 'iOS') {
                         // DOM.smallTip(document.body.scrollHeight);
-                        document.body.scrollTop = document.body.scrollHeight;
-                    } else {
-                        DOM.scrollBottom();
+                        // document.body.scrollTop = document.body.scrollHeight-210;
+                        // bottombox.addClass('fix-bottom');
                     }
-                }, 300);
+                    DOM.scrollBottom();
+                }, 600);
             };
         }).on('blur', () => {
-            clearInterval(time);
-            bottombox.removeClass('fix-bottom');
-            document.body.scrollTop=0;
+            // // clearInterval(time);
+            // document.body.scrollTop =0;
+            // bottombox.removeClass('fix-bottom');
             DOM.scrollBottom();
         }).on('keyup',
             debounce(() => { // 防抖函数,防止不必要的重复操作 自动补全
@@ -100,14 +101,26 @@ let DOM = {
          */
         body.on('click', '.s-choices', function() {
             let val = $(this).attr('word');
+            let index = $(this).prev().text();
             webIm.sendMsg({
                 data: val,
-            });
+            }, index);
+        });
+        // 长按显示
+        body.on('taphold', '.chat-msg', {duration: 1000}, function(e) {
+            DOM.popUp=$(this).find('.tools-pop-up');
+            DOM.popUp.show();
+            e.preventDefault();
+        });
+        body.on('click', function() {
+            if (DOM.popUp) {
+                DOM.popUp.hide();
+            }
         });
         /**
          * 踩/不满意
          */
-        msgListConent.on('click', '.j-trample-icon', function() {
+        msgListConent.on('click', '.j-trample-icon', function(e) {
             e.stopPropagation();
             let id = $(this).attr('id');
             new Promise((resolve, reject) => {
@@ -117,10 +130,10 @@ let DOM = {
             }).then((data) => {
                 $(this).addClass('active');
                 $(this).closest('.tools-pop-up').fadeOut();
-                // 更新本地缓存
-                webIm.setHistoryById(id, {
-                    dislick: 1,
-                });
+                // // 更新本地缓存
+                // webIm.setHistoryById(id, {
+                //     dislick: 1,
+                // });
             });
         });
         /**
@@ -204,6 +217,7 @@ let DOM = {
     scrollIntoView() {
         window.onresize = debounce(() => {
             bottombox[0].scrollIntoView(false); // 底部对齐
+            bottombox.find('input')[0].scrollIntoView(false);
             body[0].scrollIntoView(false);
             let close = $('.viewer-close');
             if (close.length >0) {
@@ -218,6 +232,13 @@ let DOM = {
      */
     tip(message) {
         console.log(message);
+    },
+    /**
+     * 显示满意度
+     * @param {Object} obj dom对象 
+     */
+    showSatisfied(obj) {
+
     },
     /**
      * log
@@ -347,7 +368,7 @@ let DOM = {
      * @return {String} html
      */
     getSmalltpl(msg) {
-        return '<li class="user-join-time"><div>' + msg + '</div></li>';
+        return '<li class="user-join-time"><p>' + msg + '</p></li>';
     },
     /**
      * 隐藏更多历史纪录按钮
@@ -368,7 +389,11 @@ let DOM = {
      * @param {String} colorValue 
      */
     setMobileTitleBgColor(colorValue) {
+        // 新增,设置颜色的同时,设置用户气泡颜色
         mobileTitle.css('background-color', colorValue);
+        insertCss('.im-list-block .user-say .chat-con .chat-msg { background: '+colorValue+';}');
+        insertCss('.im-list-block .user-say .chat-con .chat-msg .chat-arr{ border-left: 9px solid '+colorValue+';}');
+        insertCss('.bottom-text-content .send-msg{ background: '+colorValue+';}');
     },
     getBrowserInfo() {
         let agent = navigator.userAgent.toLowerCase();

@@ -30,7 +30,7 @@
                     <a class="pho-imgs pho-imgs-video" href="{{= it.url}}" target="_blank">
                         <i class="play-ico"></i>
                         <span class="paly-black"></span>
-                        <img src="{{= it.cover_img?it.cover_img:'images/login-bg.jpg' }}">
+                        <img src="{{= it.cover_img?it.cover_img:'images/login-bg.jpg' }}" class="no-viewer">
                     </a>
                     {{ } }}
                 </div>

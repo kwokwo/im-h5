@@ -47,7 +47,7 @@
                 {{? item.content_type == "image"}}
                 <div class="chat-msg-txt">
                     <div class="pho-imgs">
-                        {{ if(isJSON(item.abstract)){ }}  <img class="sImg gallery-pic" src="{{= JSON.parse(item.abstract).answer}}"/> {{ } else { }} <img class="sImg gallery-pic" src="{{= item.abstract }}"/> {{ } }}
+                        {{ if(isJSON(item.abstract)){ }}  <img class="sImg gallery-pic no-viewer" src="{{= JSON.parse(item.abstract).answer}}"/> {{ } else { }} <img class="sImg gallery-pic no-viewer" src="{{= item.abstract }}"/> {{ } }}
                     </div>
                 </div>
                 {{?}}
@@ -59,7 +59,7 @@
                     </div>
                     <!--文本-->
                     <a class="chat-message-map" href="{{= JSON.parse(item.abstract).answer}}" target="_blank">
-                        <img style="max-width:300px;" src="{{= JSON.parse(item.abstract).cover_img}}" />
+                        <img style="max-width:300px;" class="no-viewer" src="{{= JSON.parse(item.abstract).cover_img}}" />
                     </a>
                 </div>
             </div>
@@ -73,7 +73,7 @@
                 {{?}}
                 <div class="chat-message">
                     <dl class="minute-box">
-                        <dt><img src="{{= JSON.parse(item.abstract).cover_img }}"></dt>
+                        <dt><img src="{{= JSON.parse(item.abstract).cover_img }}" class="no-viewer"></dt>
                         <dd style="max-height: 90px">
                             {{? JSON.parse(item.abstract).title.length
                             < 12}} <span style="margin-bottom: 2px;"><a style="color: #333;" href="{{= JSON.parse(item.abstract).url}}" target="_blank">{{= JSON.parse(item.abstract).title }}</a></span>
@@ -90,7 +90,7 @@
                 {{?}}
                 <div class="chat-message">
                     <dl class="minute-box">
-                        <dt><img src="{{= it.cover_img }}"></dt>
+                        <dt><img src="{{= it.cover_img }}" class="no-viewer"></dt>
                         <dd style="max-height: 90px">
                             {{? item.text.length < 12}} 
                             <span style="margin-bottom: 2px;"><a style="color: #333;" href="rich_view.html?id={{=item.data_id}}" target="_blank">{{= item.text }}</a></span>

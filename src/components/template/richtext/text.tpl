@@ -25,7 +25,7 @@
                 <!--文本-->
                 <div class="chat-message">
                     <dl class="minute-box">
-                        <dt><img src="{{= it.cover_img }}"></dt>
+                        <dt><img src="{{= it.cover_img }}" class="no-viewer"></dt>
                         <dd style="max-height: 90px">
                             {{? it.title.length
                             < 12 || it.summary.length < 20}} <span style="margin-bottom: 2px;"><a style="color: #333;" href="{{= it.url}}" target="_blank">{{= it.title }}</a></span>
