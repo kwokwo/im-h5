@@ -50,6 +50,7 @@ IM.prototype = {
             dom.log('绑定交互dom');
             //  bindDom 绑定交互dom
             // return resolve();
+            dom.setDisable(true);
            return dom.initBaseDom(resolve, reject); // 返回promise对象 resolve
         }).then(() => {
             dom.log('初始化登录用户');
@@ -69,6 +70,7 @@ IM.prototype = {
             return webim.initSessionService();
         }).then((res)=>{
             dom.log('连接成功');
+            dom.setDisable(false);
         }).catch((error)=>{
             dom.log(error, 'error');
         });

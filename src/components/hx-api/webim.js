@@ -190,14 +190,23 @@ let im = {
             onOpened() {
                 resolve();
             },
+            onError( message ) {
+                // dom.log(message);
+                // // dom.smallTip(message.data, false);
+                // // im.reconnect();
+                // im._open();
+            },
+            onOffline() {
+                im._open();
+            },
             // 连接关闭回调
             onClosed: debounce(() => {
                 if (!im.closeType) {
-                    dom.smallTip('连接异常关闭,请重新连接', false);
-                    dom.setToReconnect();
-                    im.closeType = false;
+                    // dom.smallTip('连接异常关闭,请重新连接', false);
+                    dom._open();
                 } else {
                     dom.log('正常关闭环信');
+                    im.closeType = false;
                 }
             }, 300),
             onTextMessage(message) {
@@ -421,7 +430,7 @@ let im = {
                 url: abstract.url,
                 author: abstract.author,
             };
-            let tpl = require('../template/richtext/audio.tpl');
+            let tpl = require('../template/richtext/video.tpl');
             return tpl(tplData);
         } else if ( dataJson.sub_type == 'audio') {
             let tplData = {
@@ -681,6 +690,9 @@ let im = {
             ext: ext,
         });
         let _webim = msg.body;
+         let _html = this._setUserText(_webim);
+        dom.appendHtml(_html);
+        dom.scrollBottom();
         // primose 判断是否发送成功
         new Promise((resolve, reject) => {
             // 消息发送成功回调
@@ -694,10 +706,10 @@ let im = {
             this.conn.send(_webim);
         }).then(() => {
             // 发送成功之后的操作
-            let _html = this._setUserText(_webim);
-            dom.appendHtml(_html);
+            // let _html = this._setUserText(_webim);
+            // dom.appendHtml(_html);
             this._setHistorys(_html);
-            dom.scrollBottom();
+            // dom.scrollBottom();
         }).catch((e) => {
             // 失败时提示
             dom.log('[sendMsg]' + e, 'error');

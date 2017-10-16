@@ -8,6 +8,7 @@ import customer from './customer-service';
 import Viewer from './viewer/viewer.js';
 import './viewer/viewer.min.css';
 import debounce from 'debounce';
+// import store from 'store';
 import insertCss from 'insert-css';
 import MobileDetect from 'mobile-detect';
 const md = new MobileDetect(window.navigator.userAgent);
@@ -47,23 +48,62 @@ let DOM = {
                 textarea.val('');
             }
         });
-        // let time;
-        textarea.on('focus', () => {
+        let time;
+        // let first = store.get('first_height');
+        // let wHeight = $(window).height();
+        let titleHeight = mobileTitle.height();
+        let bottomHeight = bottombox.height();
+        // 参考解决底部input问题,3次循环来获取,防止获取数据太多弹出有误
+        // let count = 0;
+        textarea.on('focus', function() {
+            let target = this;
             if (md.mobile()) {
                 // bottombox.addClass('fix-bottom');
-               setTimeout(function() {
+                time = setTimeout(function() {
                     if (md.os() == 'iOS') {
+                        let scrollValue;
+                        let scrollTop = $(document).scrollTop();
+                        // let innerHeight = window.innerHeight;
+                        let viewPositionBottom = target.getBoundingClientRect().bottom;
+                        // DOM.smallTip('wheight:'+wHeight+'scrollTop:'+scrollTop+'innerHeight:'+innerHeight);
+                        // DOM.smallTip('bottom:'+($(target).offset().top + $(target).height()));
+                        // DOM.smallTip('keshi:'+viewPositionBottom);
+                        if (scrollTop > viewPositionBottom) {
+                            // 滚动区域大于可视区域
+                            if (viewPositionBottom + titleHeight > scrollTop) {
+                                // 出现bug情况
+                            // DOM.smallTip('BOTTOM:'+bottombox.height());
+                            // DOM.smallTip('TOP:'+titleHeight);
+                                scrollValue = scrollTop + titleHeight -10;
+                            } else {
+                                scrollValue = scrollTop - 10;
+                            }
+                        } else {
+                            // 滚动区域小于可视区域
+                            if (viewPositionBottom - scrollTop > titleHeight) {
+                                //  出现bug情况
+                                scrollValue = scrollTop + titleHeight;
+                            } else {
+                                if (titleHeight == window.innerHeight) {
+                                    scrollValue = bottomHeight;
+                                } else {
+                                     scrollValue = scrollTop;
+                                }
+                            }
+                        }
+                        // DOM.smallTip(scrollValue);
+                        // DOM.smallTip(scrollTop);
                         // DOM.smallTip(document.body.scrollHeight);
-                        // document.body.scrollTop = document.body.scrollHeight-210;
+                        // document.body.scrollTop = scrollValue;
+                        document.body.scrollTop = scrollValue;
                         // bottombox.addClass('fix-bottom');
+                        target.scrollIntoView(true);
                     }
                     DOM.scrollBottom();
                 }, 600);
             };
         }).on('blur', () => {
-            // // clearInterval(time);
-            // document.body.scrollTop =0;
-            // bottombox.removeClass('fix-bottom');
+            clearInterval(time);
             DOM.scrollBottom();
         }).on('keyup',
             debounce(() => { // 防抖函数,防止不必要的重复操作 自动补全
@@ -96,6 +136,10 @@ let DOM = {
                 // textarea.focus();
             }
         });
+        $(window).bind( 'orientationchange', function(e) {
+            // 横屏收起
+            textarea.blur();
+        });
         /**
          * choices发送
          */
@@ -106,17 +150,20 @@ let DOM = {
                 data: val,
             }, index);
         });
-        // 长按显示
+        // // 长按显示
         body.on('taphold', '.chat-msg', {duration: 1000}, function(e) {
+            e.preventDefault();
+            e.stopPropagation();
             DOM.popUp=$(this).find('.tools-pop-up');
             DOM.popUp.show();
-            e.preventDefault();
         });
-        body.on('click', function() {
-            if (DOM.popUp) {
-                DOM.popUp.hide();
-            }
+        body.not('.chat-msg').on('click', function() {
+              if (DOM.popUp) DOM.popUp.hide();
         });
+        // // 对A标签单独处理
+        // body.on('click', 'a', function(e) {
+        //     $(this).attr('target', '_blank');
+        // });
         /**
          * 踩/不满意
          */
@@ -189,6 +236,16 @@ let DOM = {
                 dialogList.scrollTop($this.height() - oldHeight);
             });
         });
+        // 对视频的处理
+        body.on('click', '.video-panel-iframe', function() {
+            let _iframe = $(this);
+            if (!_iframe.hasClass('disable')) {
+                _iframe.addClass('disable video-width-auto');
+                _iframe.prev().addClass('video-loading');
+                let _url = _iframe.data('url');
+                _iframe.append(_url);
+            }
+        });
     },
     /**
      * initBaseDom
@@ -232,13 +289,6 @@ let DOM = {
      */
     tip(message) {
         console.log(message);
-    },
-    /**
-     * 显示满意度
-     * @param {Object} obj dom对象 
-     */
-    showSatisfied(obj) {
-
     },
     /**
      * log
@@ -349,6 +399,7 @@ let DOM = {
     /**
      * smallTip
      * 底部输入框上方最小的文字提示
+     * isHistory 是否加入历史纪录
      * @param {String} msg 
      * @param {boolean} isHistory 是否加入历史纪录
      */
