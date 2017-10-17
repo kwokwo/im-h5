@@ -1,6 +1,5 @@
 'use strict';
 import env from '../../../config/env.js';
-import dom from '../dom.js';
 import ajax from './ajax.js';
 import hxApi from './index.js';
 import robot from '../robot';
@@ -51,7 +50,7 @@ let im = {
                     });
                     im.addHistoryDom(()=>{
                         // 默认加载的时候,跳转到底部
-                       dom.scrollBottom();
+                       env.DOM.scrollBottom();
                        resolve();
                    });
                 } else {
@@ -67,7 +66,7 @@ let im = {
                                 // 是否有转人工的按钮
                                 if (this.sessionServer.switch_to_man_set === 1) {
                                     // 展示转人工的按钮
-                                    dom.showCustomerBtn();
+                                    env.DOM.showCustomerBtn();
                                 }
                             } else {
                                 // 连接客服
@@ -137,17 +136,17 @@ let im = {
      * 重新获取接口
      */
     reconnect() {
-        dom.userLoad(true);
-        dom.scrollBottom();
+        env.DOM.userLoad(true);
+        env.DOM.scrollBottom();
         chatWin.initBaseService().then(()=>{
             return this.initImService();
         }).then(()=>{
             return im.initSessionService();
         }).then(()=>{
-            dom.userLoad(false);
-            dom.log('重新连接成功');
+            env.DOM.userLoad(false);
+            env.DOM.log('重新连接成功');
         }).catch((res)=>{
-            dom.log(res, 'error');
+            env.DOM.log(res, 'error');
         });
     },
     /**
@@ -162,7 +161,7 @@ let im = {
             dislike: 0,
             abstract: userMsgData.msg,
         };
-        let tpl = require('../template/usertext.tpl');
+        let tpl = env.DOM.getUserTextTpl();
         return tpl(tplData);
     },
     /**
@@ -191,8 +190,8 @@ let im = {
                 resolve();
             },
             onError( message ) {
-                // dom.log(message);
-                // // dom.smallTip(message.data, false);
+                // env.DOM.log(message);
+                // // env.DOM.smallTip(message.data, false);
                 // // im.reconnect();
                 // im._open();
             },
@@ -202,10 +201,10 @@ let im = {
             // 连接关闭回调
             onClosed: debounce(() => {
                 if (!im.closeType) {
-                    // dom.smallTip('连接异常关闭,请重新连接', false);
-                    dom._open();
+                    // env.DOM.smallTip('连接异常关闭,请重新连接', false);
+                    env.DOM._open();
                 } else {
-                    dom.log('正常关闭环信');
+                    env.DOM.log('正常关闭环信');
                     im.closeType = false;
                 }
             }, 300),
@@ -218,8 +217,8 @@ let im = {
                     im.addHistoryDom(()=>{
                          // 默认加载的时候,跳转到底部
 
-                        dom.userLoad(false);
-                        dom.scrollBottom();
+                        env.DOM.userLoad(false);
+                        env.DOM.scrollBottom();
                     });
                     return;
                 }
@@ -229,9 +228,9 @@ let im = {
                     let _maxtime = im.startTime + 3000;
                     if (_maxtime > _now) return;
                     // 操作会话已经结束
-                    dom.setToReconnect();
+                    env.DOM.setToReconnect();
                     // 显示会话结束
-                    dom.smallTip(message.ext.abstract);
+                    env.DOM.smallTip(message.ext.abstract);
                     return;
                 }
                 // 断言判断是否是重复获取
@@ -264,13 +263,13 @@ let im = {
             // 有其他服务的时候返回 notHtml
             // 增加promise 方法,判断是否存在图片 进行lazyload
             if (_html === '') {
-                dom.log('其它操作');
+                env.DOM.log('其它操作');
                 return;
             }
             im.hasImage(_html).then((obj)=>{
                  // 增加一条新的信息到store存储
-                dom.appendHtml(_html);
-                dom.scrollBottom();
+                env.DOM.appendHtml(_html);
+                env.DOM.scrollBottom();
                 im._setHistorys(_html);
             });
         });
@@ -305,13 +304,13 @@ let im = {
             // 有其他服务的时候返回 notHtml
             // 增加promise 方法,判断是否存在图片 进行lazyload
             if (_html === '' || !_html) {
-                dom.log('其它操作');
+                env.DOM.log('其它操作');
                 return;
             }
             im.hasImage(_html).then((obj)=>{
                  // 增加一条新的信息到store存储
-                dom.appendHtml(_html);
-                dom.scrollBottom();
+                env.DOM.appendHtml(_html);
+                env.DOM.scrollBottom();
                 im._setHistorys(_html);
             });
         });
@@ -398,7 +397,7 @@ let im = {
             cover_img: abstract.cover_img,
             answer: abstract.answer,
         };
-        let tpl = require('../template/position.tpl');
+        let tpl = env.DOM.getPositionTpl();
         return tpl(tplData);
     },
     /**
@@ -418,7 +417,7 @@ let im = {
                 cover_img: abstract.cover_img,
                 url: abstract.url,
             };
-            let tpl = require('../template/richtext/image.tpl');
+            let tpl = env.DOM.getRichtextImgTpl();
             return tpl(tplData);
         } else if ( dataJson.sub_type == 'video') {
             let tplData = {
@@ -430,7 +429,7 @@ let im = {
                 url: abstract.url,
                 author: abstract.author,
             };
-            let tpl = require('../template/richtext/video.tpl');
+            let tpl = env.DOM.getRichtextVideoTpl();
             return tpl(tplData);
         } else if ( dataJson.sub_type == 'audio') {
             let tplData = {
@@ -442,7 +441,7 @@ let im = {
                 url: abstract.url,
                 author: abstract.author,
             };
-            let tpl = require('../template/richtext/audio.tpl');
+            let tpl = env.DOM.getRichtextAudioTpl();
             return tpl(tplData);
         } else if ( dataJson.sub_type == 'weather') {
             let tplData = {
@@ -459,7 +458,7 @@ let im = {
                 weather: abstract.weather,
                 air: abstract.air,
             };
-            let tpl = require('../template/richtext/weather.tpl');
+            let tpl = env.DOM.getRichtextWeatherTpl();
             return tpl(tplData);
         } else if (dataJson.sub_type == 'richtext') {
             let tplData = {
@@ -471,7 +470,7 @@ let im = {
                 url: abstract.url,
                 summary: abstract.summary,
             };
-            let tpl = require('../template/richtext/text.tpl');
+            let tpl = env.DOM.getRichtextTextTpl();
             return tpl(tplData);
         }
     },
@@ -491,7 +490,7 @@ let im = {
             dislike: serverData.dislike || 0,
             abstract: abstract.type == 'json' ? abstract.data.answer : abstract.data,
         };
-        let tpl = require('../template/robottext.tpl');
+        let tpl = env.DOM.getRobottextTpl();
         return tpl(tplData);
     },
     /**
@@ -552,7 +551,7 @@ let im = {
             disable: serverData.dislike,
             answer: abstract.answer,
         };
-        let tpl = require('../template/image.tpl');
+        let tpl = env.DOM.getImageTpl();
         return tpl(tplData);
     },
     /**
@@ -577,7 +576,7 @@ let im = {
             abstract: src[0].outerHTML,
         };
         // 解析回来
-        let tpl = require('../template/video.tpl');
+        let tpl = env.DOM.getVideoTpl();
         return tpl(tplData);
     },
     /**
@@ -608,7 +607,7 @@ let im = {
             disable: serverData.dislike || 0,
             abstract: abstract.answer,
         };
-        let tpl = require('../template/recommanque.tpl');
+        let tpl = env.DOM.getRecommanqueTpl();
         return tpl(tplData);
     },
     /**
@@ -626,7 +625,7 @@ let im = {
             disable: serverData.dislike,
             abstract: abstract,
         };
-        let tpl = require('../template/choices.tpl');
+        let tpl = env.DOM.getChoicesTpl();
         return tpl(tplData);
     },
     /**
@@ -638,18 +637,18 @@ let im = {
      */
     _setUnknow(serverData, serverExt) {
         if (serverExt.cmd_type == 'disconnect_by_server' ) {
-            return dom.getSmalltpl(serverExt.abstract);
+            return env.DOM.getSmalltpl(serverExt.abstract);
         }
         // 欢迎模板提示tip
         if (serverExt.cmd_type == 'robot_welcome_tip') {
-            dom.userLoad(false);
+            env.DOM.userLoad(false);
             let abstract = serverData.data; // position  数据返回的abstract 为字符串
             let tplData = {
                 id: serverExt.ext_old_msg_id,
                 dislike: serverData || 0,
                 abstract: abstract,
             };
-            let tpl = require('../template/robottext.tpl');
+            let tpl = env.DOM.getRobottextTpl();
             return tpl(tplData);
         }
         // 普通的不明信息流程
@@ -678,7 +677,7 @@ let im = {
                             dislike: serverData || 0,
                             abstract: abstract,
                         };
-                        tpl = require('../template/robottext.tpl');
+                        tpl = env.DOM.getRobottextTpl();
                         return tpl(tplData);
                     } else {
                         return '';
@@ -708,7 +707,7 @@ let im = {
             ext_from_user_type: 1,
             ext_browser_url: window.location.href,
             ext_client_os: 'Windows',
-            ext_client_browser: dom.getBrowserInfo(),
+            ext_client_browser: env.DOM.getBrowserInfo(),
             ext_audio_text: '',
             ext_client_company: '',
             ext_client_duty: '',
@@ -731,8 +730,8 @@ let im = {
         });
         let _webim = msg.body;
          let _html = this._setUserText(_webim);
-        dom.appendHtml(_html);
-        dom.scrollBottom();
+        env.DOM.appendHtml(_html);
+        env.DOM.scrollBottom();
         // primose 判断是否发送成功
         new Promise((resolve, reject) => {
             // 消息发送成功回调
@@ -740,19 +739,19 @@ let im = {
                 resolve();
             };
             _webim.fail = function(e) {
-                dom.log(e);
+                env.DOM.log(e);
                 reject(e);
             };
             this.conn.send(_webim);
         }).then(() => {
             // 发送成功之后的操作
             // let _html = this._setUserText(_webim);
-            // dom.appendHtml(_html);
+            // env.DOM.appendHtml(_html);
             this._setHistorys(_html);
-            // dom.scrollBottom();
+            // env.DOM.scrollBottom();
         }).catch((e) => {
             // 失败时提示
-            dom.log('[sendMsg]' + e, 'error');
+            env.DOM.log('[sendMsg]' + e, 'error');
         });
     },
     /**
@@ -783,9 +782,9 @@ let im = {
         let _historysArray = _historys.splice(0, 15);
         if (_historys.length <= 0) {
             // 已经没有历史消息 屏蔽掉更多历史按钮
-            dom.disableMoreHistory(true);
+            env.DOM.disableMoreHistory(true);
         } else {
-            dom.disableMoreHistory(false);
+            env.DOM.disableMoreHistory(false);
         }
         for (let item of _historysArray) {
                 _html = item + _html;
@@ -802,7 +801,7 @@ let im = {
          // 懒加载图片
          let _img = $(_html).find('img');
          if (_img.length == 0) {
-             let $this = dom.prependHtml(_html);
+             let $this = env.DOM.prependHtml(_html);
              if (callback) {
                  callback($this);
             }
@@ -814,13 +813,13 @@ let im = {
          };
 
          loadImage(images).then(()=>{
-            let $this = dom.prependHtml(_html);
+            let $this = env.DOM.prependHtml(_html);
             if (callback) {
                 callback($this);
            }
          }).catch((e)=>{
-            dom.log(e);
-            dom.log('[addHistoryDom]promise历史纪录失败', 'error');
+            env.DOM.log(e);
+            env.DOM.log('[addHistoryDom]promise历史纪录失败', 'error');
          });
     },
     /**

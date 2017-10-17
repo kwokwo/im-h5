@@ -1,9 +1,9 @@
 'use strict';
 import hxApi from '../hx-api';
 import webIm from '../hx-api/webim';
-import dom from '../dom.js';
 import robot from '../robot';
 import ajax from '../hx-api/ajax.js';
+import env from '../../../config/env.js';
 export default {
     /**
      * callRobot
@@ -14,14 +14,13 @@ export default {
      */
     callCustomer(showMsg = true, outresolve, genre = 'labour') {
         new Promise((resolve, reject) => {
-            dom.log('连接客服列表....');
+            env.DOM.log('连接客服列表....');
             // 获取机器人列表
             this.callCustomerAjax().done((res) => {
              resolve(res);
             });
         }).then((res) => {
-            dom.log('创建客服连接....');
-
+            env.DOM.log('创建客服连接....');
             if (res.is_success) {
             let customerData = res.data;
             let _status =customerData.service_status;
@@ -29,7 +28,7 @@ export default {
             if (_status == 'noOnlineService' || _status == 'noFreeService' ) {
                 // 提示信息
                 if (genre == 'labour') {
-                    dom.smallTip('很抱歉，暂时无可接待客服');
+                    env.DOM.smallTip('很抱歉，暂时无可接待客服');
                 }
                 // 不在线时试转机器人
                 if (!webIm.imServer.id || webIm.imServer.type === 'customer') {
@@ -37,7 +36,7 @@ export default {
                 }
                 // 如果不是转人工,显示转人工按钮
                 if (webIm.sessionServer.switch_to_man_set === 1) {
-                    dom.showCustomerBtn();
+                    env.DOM.showCustomerBtn();
                 }
                 // promise resolve 处理外部等待
                 if (outresolve) {
@@ -47,7 +46,7 @@ export default {
                 // 设置当前的服务对象为客服信息
                 this._setImServerToCustomer(customerData);
                 // 设置现在的头部信息
-                dom.setMobileTitle(customerData.real_name);
+                env.DOM.setMobileTitle(customerData.real_name);
                 // 异步调用promise对象,获取服务信息
                 new Promise((resolve, reject)=>{
                     // genre是否需要添加no_tip
@@ -56,7 +55,7 @@ export default {
                     });
                 }).then((res)=>{
                         if (genre == 'labour') {
-                            dom.smallTip('现在是客服 '+customerData.real_name+' 为您服务');
+                            env.DOM.smallTip('现在是客服 '+customerData.real_name+' 为您服务');
                         }
                         Object.assign(webIm.imServer, {
                             chat_identity: res.data.chat_identity,
@@ -65,13 +64,13 @@ export default {
                         if (outresolve) {
                             outresolve(showMsg);
                         }
-                        dom.log('连接客服成功');
-                        dom.userLoad(false); // 关闭连接loading
-                        // dom.showCustomerBtn(); // 关闭转人工按钮
+                        env.DOM.log('连接客服成功');
+                        env.DOM.userLoad(false); // 关闭连接loading
+                        // env.DOM.showCustomerBtn(); // 关闭转人工按钮
                 });
             }
         } else {
-            dom.smallTip('很抱歉，暂时无法转接人工服务');
+            env.DOM.smallTip('很抱歉，暂时无法转接人工服务');
         }
         });
     },

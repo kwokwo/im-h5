@@ -1,7 +1,6 @@
 'use strict';
 import ajax from './ajax.js';
-import dom from '../dom.js';
-import store from 'store';
+import env from '../../../config/env.js';
 let index = {
     urlData: {}, // 地址数据对象
     loginInfo: {}, // 登录成功之后得到的登录信息
@@ -26,10 +25,10 @@ let index = {
                 // 判断是否初始化完成
                 index.loginInfo = loginInfo;
             } else {
-                dom.log('初始化用户信息失败!');
+                env.DOM.log('初始化用户信息失败!');
             }
         }).catch((error) => {
-            dom.log(error, 'error');
+            env.DOM.log(error, 'error');
         });
     },
     /**
@@ -118,10 +117,10 @@ let index = {
             // 判断是否有值
             if (robotData.length > 0) {
                 // 设置title名称
-                dom.setMobileTitle(robotData[0].robot_name);
+                env.DOM.setMobileTitle(robotData[0].robot_name);
             }
         }).fail((res) => {
-            dom.log('[robot] 获取robot设置错误', 'error');
+            env.DOM.log('[robot] 获取robot设置错误', 'error');
         });
     },
     /**
@@ -134,7 +133,7 @@ let index = {
             if (res.is_success) {
                 if (res.data) {
                     let _data = res.data;
-                    dom.setMobileTitleBgColor(_data.color);
+                    env.DOM.setMobileTitleBgColor(_data.color);
                 }
             }
         });

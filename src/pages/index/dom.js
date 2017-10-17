@@ -1,10 +1,8 @@
 'use strict';
 import './jquery/taphold.js';
-import env from '../../config/env.js';
-import ajax from './hx-api/ajax.js';
-import hxApi from './hx-api';
-import webIm from './hx-api/webim.js';
-import customer from './customer-service';
+
+import {ajax, hxApi, webIm, env, customer} from '../../components/index.js';
+
 import Viewer from './viewer/viewer.js';
 import './viewer/viewer.min.css';
 import debounce from 'debounce';
@@ -464,5 +462,41 @@ let DOM = {
     scrollBottom() {
         dialogList.scrollTop(msgListConent.height());
    },
+   getUserTextTpl() {
+        return require('./template/usertext.tpl');
+   },
+   getPositionTpl() {
+        return require('./template/position.tpl');
+   },
+   getImageTpl() {
+        return require('./template/image.tpl');
+   },
+   getVideoTpl() {
+        return require('./template/video.tpl');
+    },
+    getRecommanqueTpl() {
+        return require('./template/recommanque.tpl');
+    },
+    getChoicesTpl() {
+        return require('./template/choices.tpl');
+    },
+   getRobottextTpl() {
+       return require('./template/robottext.tpl');
+   },
+   getRichtextImgTpl() {
+        return require('./template/richtext/image.tpl');
+   },
+   getRichtextVideoTpl() {
+        return require('./template/richtext/video.tpl');
+   },
+   getRichtextAudioTpl() {
+        return require('./template/richtext/audio.tpl');
+   },
+   getRichtextWeatherTpl() {
+        return require('./template/richtext/weather.tpl');
+   },
+   getRichtextTextTpl() {
+        return require('./template/richtext/text.tpl');
+   },
 };
-export default DOM;
+module.exports = DOM;

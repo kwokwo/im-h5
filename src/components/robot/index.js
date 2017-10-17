@@ -1,7 +1,7 @@
 'use strict';
 import hxApi from '../hx-api';
 import webIm from '../hx-api/webim.js';
-import dom from '../dom.js';
+import env from '../../../config/env.js';
 import ajax from '../hx-api/ajax.js';
 export default {
     /**
@@ -14,12 +14,12 @@ export default {
             this.callRobotAjax().done((res) => {
                 if (res.is_success) {
                     let robot = res.data[0];
-                    dom.log('连接机器人列表....');
+                    env.DOM.log('连接机器人列表....');
                     resolve(robot);
                 }
             });
         }).then((robotData) => {
-            dom.log('创建机器人....');
+            env.DOM.log('创建机器人....');
             new Promise((resolve) => {
                 // 创建机器人
                 this.callRobotNewAjax(robotData).done((res) => {
@@ -27,10 +27,10 @@ export default {
                     this._setImServerToRobot(robotData);
                     resolve();
                 }).fail((res)=>{
-                    dom.log(res);
+                    env.DOM.log(res);
                 });
             }).then(()=>{
-                dom.log('连接机器人成功');
+                env.DOM.log('连接机器人成功');
             });
         });
     },

@@ -19,9 +19,10 @@
 'use strict';
 import chatWin from './chat-win';
 import env from '../../config/env.js';
-// 导入dom事件绑定
-import dom from './dom.js';
-import webim from './hx-api/webim.js';
+import ajax from './hx-api/ajax.js';
+import hxApi from './hx-api';
+import webIm from './hx-api/webim.js';
+import customer from './customer-service';
 import attachFastClick from 'fastclick';
 // const robot = new Robot();
 // const user = new User();
@@ -34,6 +35,8 @@ let IM = function(_config) {
     // 获取当前环境信息 配置相关请求地址
     this.config = env[env.base];
     this.config = Object.assign(_config||{}); // 浅拷贝初始化配置
+    env.setDOM(_config.dom);
+    env.setTemplate(_config.template_url);
 };
 
 IM.prototype = {
@@ -47,33 +50,36 @@ IM.prototype = {
         attachFastClick.attach(document.body);
         // promise 
         new Promise((resolve, reject) => {
-            dom.log('绑定交互dom');
+            env.DOM.log('绑定交互dom');
             //  bindDom 绑定交互dom
             // return resolve();
-            dom.setDisable(true);
-           return dom.initBaseDom(resolve, reject); // 返回promise对象 resolve
+            env.DOM.setDisable(true);
+           return env.DOM.initBaseDom(resolve, reject); // 返回promise对象 resolve
         }).then(() => {
-            dom.log('初始化登录用户');
+            env.DOM.log('初始化登录用户');
             // 初始化登录用户
             // 判断是否存在缓存
           return chatWin.initBaseLogin();
         }).then(() => {
-            dom.log('初始化游客和会员服务');
+            env.DOM.log('初始化游客和会员服务');
             // 初始化服务
           return chatWin.initBaseService(); // 返回loginInfo
         }).then((loginInfo)=>{
-            dom.log('初始化环信服务');
-            // 接入环信webim
-            return webim.initImService();
+            env.DOM.log('初始化环信服务');
+            // 接入环信webIm
+            return webIm.initImService();
         }).then(()=>{
-            dom.log('初始化自身服务');
-            return webim.initSessionService();
+            env.DOM.log('初始化自身服务');
+            return webIm.initSessionService();
         }).then((res)=>{
-            dom.log('连接成功');
-            dom.setDisable(false);
+            env.DOM.log('连接成功');
+            env.DOM.setDisable(false);
         }).catch((error)=>{
-            dom.log(error, 'error');
+            env.DOM.log(error, 'error');
         });
     },
 };
-module.exports = IM;
+
+
+export {ajax, hxApi, webIm, env, customer, IM};
+
