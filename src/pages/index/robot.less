@@ -635,8 +635,38 @@ li {
                 margin: 5px 0;
                 display: inline-block;
                 cursor: pointer;
+                width: 100%;
+                .paly-black{
+                    display: inline-block;
+                    background: #000;
+                    position: absolute;
+                    left: 0;
+                    top: 0;
+                    width: 100%;
+                    height: 100%;
+                    filter: alpha(opacity=50);
+                    moz-opacity: 0.5;
+                    opacity: 0.5;
+                    z-index: 5;
+                }
+                .play-ico{ 
+                    background:url('./images/video-icon.png') no-repeat left top;
+                    width: 50px;
+                    height: 50px;
+                    position: absolute;
+                    top: 0;
+                    bottom:0;
+                    left:0;
+                    right: 0;
+                    background-size: 100% auto;
+                    display: block;
+                    margin: auto;
+                    z-index: 10;
+                }
                 img{
-                    max-width:100%; 
+                    width: 320px;
+                    max-width: 100%;
+                    vertical-align: middle;
                 }
                 em{
                     font-size: 14px;

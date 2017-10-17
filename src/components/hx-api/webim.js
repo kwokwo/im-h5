@@ -517,7 +517,7 @@ let im = {
                 };
             }
         }
-
+        // 数据转换
         let data = JSON.parse(serverData.data);
         let result, type;
         if (parseInt(data.abstract)) {
@@ -538,6 +538,12 @@ let im = {
             data: result,
         };
     },
+    /**
+     * 跳转到图片模板
+     * @param {Object} serverData 
+     * @param {Object} serverExt 
+     * @return {HTML} dot模板
+     */
     _setImage(serverData, serverExt) {
         let dataJson = JSON.parse(serverData.data); // 包含abstract对象
         let abstract = JSON.parse(dataJson.abstract); // position  数据返回的abstract 为对象
@@ -549,6 +555,12 @@ let im = {
         let tpl = require('../template/image.tpl');
         return tpl(tplData);
     },
+    /**
+     * 跳转到视频模板
+     * @param {Object} serverData 
+     * @param {Object} serverExt 
+     * @return {html}
+     */
     _setVideo(serverData, serverExt) {
         let dataJson = JSON.parse(serverData.data), abstract; // 包含abstract对象
         if (dataJson.abstract) { // 客服发送的视频,没有abstract
@@ -568,6 +580,12 @@ let im = {
         let tpl = require('../template/video.tpl');
         return tpl(tplData);
     },
+    /**
+     * decaodeAntiSqlXssValid
+     * 通过原来的方法去解析视频路径(bug #039 -> #39)
+     * @param {String} str 
+     * @return {String} 返回视频路径
+     */
     decaodeAntiSqlXssValid(str) {
         try {
             return str.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&#039;/g, '\'').replace(/&quot;/g, '"');
@@ -575,6 +593,13 @@ let im = {
             return str;
         }
     },
+    /**
+     * _setRecommandQue
+     * 跳转到欢迎模板
+     * @param {Object} serverData 
+     * @param {Object} serverExt 
+     * @return {HTML} HTML
+     */
     _setRecommandQue(serverData, serverExt) {
         let dataJson = JSON.parse(serverData.data); // 包含abstract对象
         let abstract = dataJson.abstract; // position  数据返回的abstract 为对象
@@ -586,6 +611,13 @@ let im = {
         let tpl = require('../template/recommanque.tpl');
         return tpl(tplData);
     },
+    /**
+     * _setChoices
+     * 跳转到多选模板
+     * @param {Object} serverData 
+     * @param {Object} serverExt 
+     * @return {HTML} html
+     */
     _setChoices(serverData, serverExt) {
         let dataJson = JSON.parse(serverData.data); // 包含abstract对象
         let abstract = dataJson.content; // position  数据返回的abstract 为对象
@@ -597,11 +629,18 @@ let im = {
         let tpl = require('../template/choices.tpl');
         return tpl(tplData);
     },
+    /**
+     * _setUnknow
+     * 公共跳转,当不知道是什么分类的时候,就跳转到unknow
+     * @param {*} serverData 
+     * @param {*} serverExt 
+     * @return {HTML} html
+     */
     _setUnknow(serverData, serverExt) {
         if (serverExt.cmd_type == 'disconnect_by_server' ) {
             return dom.getSmalltpl(serverExt.abstract);
         }
-
+        // 欢迎模板提示tip
         if (serverExt.cmd_type == 'robot_welcome_tip') {
             dom.userLoad(false);
             let abstract = serverData.data; // position  数据返回的abstract 为字符串
@@ -613,6 +652,7 @@ let im = {
             let tpl = require('../template/robottext.tpl');
             return tpl(tplData);
         }
+        // 普通的不明信息流程
         if (serverExt.content_type == 'unknow') {
             const autoCustomer = async ()=>{
                 let showType = true, tplData, tpl;

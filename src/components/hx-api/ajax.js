@@ -6,7 +6,9 @@ import hxApi from './index.js';
 export default {
     // 使用时被外部传入
     urlData: {},
+    // 环境配置
     envConfig: env[env.base],
+    // 状态(留作后续开发)
     loginStatus: false,
     /**
      * setDislikeAjax
@@ -38,6 +40,11 @@ export default {
             },
         });
     },
+    /**
+     * _getLoginVisitorAjax 
+     * 获取游客登录ajax配置
+     * @return {Object} ajax-promise 返回ajax类promise对象
+     */
     _getLoginVisitorAjax() {
         let loginData = store.get('loginBase'); // 获取loginData
         let loginName = loginData[this.urlData.id + '_client_znkf_login_sign'];
