@@ -80,6 +80,6 @@ IM.prototype = {
     },
 };
 
-
-export {ajax, hxApi, webIm, env, customer, IM};
+let imCommon = Object.assign(ajax, hxApi, webIm, env, customer);
+export {imCommon, IM};
 

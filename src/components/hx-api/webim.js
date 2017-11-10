@@ -8,6 +8,7 @@ import store from 'store';
 import chatWin from '../chat-win/index.js';
 import loadImage from 'image-promise';
 import debounce from 'debounce';
+import jsBridge from './jsBridge';
 // import unescape from 'lodash.unescape';
 let envConfig = env[env.base];
 let isJSON = require('is-json');
@@ -177,7 +178,7 @@ let im = {
      */
     _open() {
         im.startTime = Date.now();
-        this.conn.open(this.options);
+        im.conn.open(this.options);
     },
     /**
      * _listen
@@ -185,11 +186,12 @@ let im = {
      * @param {Function} resolve
      */
     _listen(resolve) {
-        this.conn.listen({
+        im.conn.listen({
             onOpened() {
                 resolve();
             },
             onError( message ) {
+                env.DOM.log(message);
                 // env.DOM.log(message);
                 // // env.DOM.smallTip(message.data, false);
                 // // im.reconnect();
@@ -209,6 +211,11 @@ let im = {
                 }
             }, 300),
             onTextMessage(message) {
+                /**
+                 * add 2017.11.10
+                 * 
+                 */
+                jsBridge.onIntelligentQaResult(message);
                 /**
                  * ---根据状态判断是否掉线等---
                  */
@@ -721,7 +728,7 @@ let im = {
                 ext_rapid_session_pos: index,
              });
         }
-        let id = this.conn.getUniqueId(); // 生成本地消息id
+        let id = im.conn.getUniqueId(); // 生成本地消息id
         let msg = new WebIM.message('txt', id); // 创建文本消息
         msg.set({
             msg: imData,
@@ -742,7 +749,7 @@ let im = {
                 env.DOM.log(e);
                 reject(e);
             };
-            this.conn.send(_webim);
+            im.conn.send(_webim);
         }).then(() => {
             // 发送成功之后的操作
             // let _html = this._setUserText(_webim);

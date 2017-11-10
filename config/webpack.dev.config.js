@@ -1,5 +1,6 @@
 /* eslint-disable */
 const path = require('path');
+const webpack =require('webpack');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const HtmlwebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
@@ -48,6 +49,11 @@ module.exports = {
   ]
   },
   plugins:[
+    new  webpack.optimize.CommonsChunkPlugin({
+      name: 'im-common',
+      filename: 'im-common.js',
+      chunks: ['index'],
+    }),
     new CleanWebpackPlugin(['dist'],{
       root: process.cwd()
     }),

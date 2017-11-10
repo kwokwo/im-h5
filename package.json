@@ -5,7 +5,7 @@
   "repository": "test",
   "main": "./src/compoents/index.js",
   "scripts": {
-    "bulid": "webpack --config=config/webpack.prod.config.js",
+    "build": "webpack --config=config/webpack.prod.config.js",
     "dev": "webpack-dev-server --config=config/webpack.dev.config.js --hot",
     "test": "webpack --config=config/webpack.dev.config.js",
     "start": "npm run bulid && http-server dist -a 0.0.0.0 -p 8080"

@@ -141,7 +141,7 @@ export default {
      * @param {Object} _ajaxLoginData 
      */
     _setLoginStor(_ajaxLoginData) {
-        store.set('loginData', _ajaxLoginData);
+        store.set('loginData_'+ window.location.host, _ajaxLoginData);
     },
     /**
      * _getLoginBaseData  
@@ -154,7 +154,7 @@ export default {
         this.urlData = hxApi.urlData = hxApi.getBaseInfoFn();
         let baseData;
         // // 判断是否是同一个ID访问
-        let oldLoginData = store.get('loginData');
+        let oldLoginData = store.get('loginData_'+ window.location.host);
         if (oldLoginData && oldLoginData.client_tenantid != this.urlData.id) {
             store.clearAll();
         }
@@ -197,7 +197,7 @@ export default {
         };
         baseConfig = Object.assign(baseConfig, config);
         baseConfig.url = this.envConfig.urlPath + baseConfig.url;
-        let _loginData = store.get('loginData');
+        let _loginData = store.get('loginData_' + window.location.host );
         // 如果已经登录，需要加入hash验证
         if (this.loginStatus && extend) {
             Object.assign(baseConfig || {}, {

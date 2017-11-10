@@ -1,8 +1,8 @@
 'use strict';
 import './jquery/taphold.js';
 
-import {ajax, hxApi, webIm, env, customer} from '../../components/index.js';
-
+// import {ajax, hxApi, webIm, env, customer} from '../../components/index.js';
+import {imCommon} from '../../components/index.js';
 import Viewer from './viewer/viewer.js';
 import './viewer/viewer.min.css';
 import debounce from 'debounce';
@@ -32,9 +32,9 @@ let DOM = {
          */
         sendBtn.on('click', function(event) {
             event.stopPropagation();
-            if ($.trim(textarea.val()) != '' && webIm.imServer.id != '') {
+            if ($.trim(textarea.val()) != '' && imCommon.imServer.id != '') {
                 // textMsgData为数据对象
-                webIm.sendMsg({
+                imCommon.sendMsg({
                     data: textarea.val(),
                 });
                 // 清空提示
@@ -108,7 +108,7 @@ let DOM = {
                 let text = $.trim(textarea.val());
                 if (text) {
                     // 获取自动补全的数据
-                    ajax.completeAjax(text).done((res) => {
+                    imCommon.completeAjax(text).done((res) => {
                         let dataArray = res.data;
                         if (dataArray && dataArray.length > 0) {
                             let _html = '';
@@ -144,7 +144,7 @@ let DOM = {
         body.on('click', '.s-choices', function() {
             let val = $(this).attr('word');
             let index = $(this).prev().text();
-            webIm.sendMsg({
+            imCommon.sendMsg({
                 data: val,
             }, index);
         });
@@ -169,7 +169,7 @@ let DOM = {
             e.stopPropagation();
             let id = $(this).attr('id');
             new Promise((resolve, reject) => {
-                ajax.setDislikeAjax(id).done((res) => {
+                imCommon.setDislikeAjax(id).done((res) => {
                     resolve(res.data);
                 });
             }).then((data) => {
@@ -185,10 +185,10 @@ let DOM = {
          * 转人工
          */
         customerBtn.on('click', function() {
-            if (webIm.imServer.type == 'robot') {
+            if (imCommon.imServer.type == 'robot') {
                 let isSuccess = true;
                  new Promise((resolve, reject)=>{
-                    customer.callCustomer(isSuccess, resolve);
+                    imCommon.callCustomer(isSuccess, resolve);
                  }).then((type)=>{
                     if (!type) {
                         // 通过判断是否需要显示额外信息,来判断是否隐藏 false 为不需要,标识隐藏按钮,接入成功
@@ -205,8 +205,8 @@ let DOM = {
          * 重新连接
          */
         reconnectBtn.on('click', function() {
-            webIm.setCloseType(true);
-            webIm.reconnect();
+            imCommon.setCloseType(true);
+            imCommon.reconnect();
             body.find('.reconnect').hide();
             DOM.setDisable(false);
         });
@@ -217,7 +217,7 @@ let DOM = {
             let textMsgData = $(this).attr('msg');
             // 发送消息
             // textMsgData为数据对象
-            webIm.sendMsg({
+            imCommon.sendMsg({
                 data: textMsgData,
             });
             // 清空提示
@@ -229,7 +229,7 @@ let DOM = {
         historyMoreBtn.on('click', () => {
             let oldHeight = msgListConent.height();
             // 获取更多之后操作
-            webIm.addHistoryDom(($this) => {
+            imCommon.addHistoryDom(($this) => {
                 // 定位到上层
                 dialogList.scrollTop($this.height() - oldHeight);
             });
@@ -299,7 +299,7 @@ let DOM = {
             console.error(new Date(), message);
         } else {
             // 如果为线上环境，则屏蔽掉log输出
-            if (env.base === 'formal' && !hxApi.urlData.debug) return;
+            if (imCommon.base === 'formal' && !imCommon.urlData.debug) return;
             console.log(new Date(), message);
         }
     },
@@ -406,7 +406,7 @@ let DOM = {
         msgListConent.append(tpl);
         // 添加到历史纪录
         if (isHistory) {
-            webIm._setHistorys(tpl);
+            imCommon._setHistorys(tpl);
         }
         DOM.scrollBottom();
     },
